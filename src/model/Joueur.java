@@ -63,21 +63,25 @@ public class Joueur {
     public Carte[] getMain() { 
         return main;
     }
-    public void jouerCarte(int index, Joueur adversaire) {
+    public String jouerCarte(int index, Joueur adversaire) {
         if (index >= 0 && index < main.length && main[index] != null) {
             Carte carteJouee = main[index];
+            String message = "";
 
             if (carteJouee.getActionZone() == pirate.ActionZone.ATTAQUE) {
                 CarteAttaque carteAttaque = (CarteAttaque) carteJouee;
                 adversaire.perdreVie(carteAttaque.getDegats());
-                System.out.println(nom + " attaque " + adversaire.getNom() + " et lui inflige " + carteAttaque.getDegats() + " dégâts ! ⚔️");
+                message = nom + " attaque " + adversaire.getNom() + " et lui inflige " + carteAttaque.getDegats() + " dégâts ! ⚔️";
             } else if (carteJouee.getActionZone() == pirate.ActionZone.POPULARITE) {
                 CartePopularite cartePopularite = (CartePopularite) carteJouee;
                 gagnerPopularite(cartePopularite.getPopularite());
-                System.out.println(nom + " gagne " + cartePopularite.getPopularite() + " points de popularité ! 🌟");
+                message = nom + " gagne " + cartePopularite.getPopularite() + " points de popularité ! 🌟";
             }
 
             main[index] = null;
+            return message;
         }
+        return "Action invalide.";
     }
+
 }

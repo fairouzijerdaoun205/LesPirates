@@ -2,10 +2,15 @@ package model;
 
 import java.util.Scanner;
 
+import pirate.Affichage;
+
 public class Jeu {
+  private Affichage affichage;
+
     private Joueur joueur1;
     private Joueur joueur2;
     private Pioche pioche;
+    
 
     public Jeu(String nomJoueur1, String nomJoueur2) {
         joueur1 = new Joueur(nomJoueur1);
@@ -61,7 +66,8 @@ public class Jeu {
                 choix = scanner.nextInt() - 1;
             }
 
-            joueurActuel.jouerCarte(choix, adversaire);
+            String message = joueurActuel.jouerCarte(choix, adversaire);
+            affichage.afficherActionCarte(message);
 
             if (joueurActuel.aGagne()) {
                 System.out.println("\n🏆 " + joueurActuel.getNom() + " a gagné en atteignant 5 points de popularité !");
