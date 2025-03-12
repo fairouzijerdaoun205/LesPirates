@@ -1,96 +1,83 @@
 package model;
 
-import pirate.IAffichage;
-
 public class Joueur {
-    private Nom nom;
-    private int pointsDeVie = 5;
-    private int popularite = 0;
-    private Main main;
-    private static final IAffichage affichage = Jeu.getAffichage();
+    private String nom;
+    private int vie;
+    private int popularite;
+    private Carte[] main;
 
-    public Joueur(Nom nom) {
+    public Joueur(String nom) {
         this.nom = nom;
-        this.main = new Main();
-    }
-    
-    public void setVie(int pointsDeVie) {
-        this.pointsDeVie = pointsDeVie;
-        if (this.pointsDeVie < 0) {
-            this.pointsDeVie = 0; // Les points de vie ne peuvent pas être négatifs
-        }
+        this.vie = 5;
+        this.popularite = 0;
+        this.main = new Carte[5]; 
     }
 
-    public Nom getNom() {
+    public String getNom() {
         return nom;
     }
 
-    public int getPointsDeVie() {
-        return pointsDeVie;
+    public int getVie() {
+        return vie;
     }
 
-    public void setPointsDeVie(int pointsDeVie) {
-        this.pointsDeVie = pointsDeVie;
+    public void perdreVie(int degats) {
+        this.vie -= degats;
+        if (this.vie < 0) this.vie = 0;
     }
 
     public int getPopularite() {
         return popularite;
     }
 
-    public void setPopularite(int popularite) {
-        this.popularite = popularite;
+    public void gagnerPopularite(int points) {
+        this.popularite += points;
     }
 
-    public Main getMain() {
-        return main;
+    public boolean estElimine() {
+        return vie <= 0;
     }
 
-    public void afficher() {
-        affichage.afficherJoueur(nom.toString(), pointsDeVie, popularite);
+    public boolean aGagne() {
+        return popularite >= 5;
+    }
+
+    public void recevoirCartes(Carte[] cartes) {
+        for (int i = 0; i < cartes.length; i++) {
+            main[i] = cartes[i];
+        }
+    }
+
+    public void afficherEtat() {
+        System.out.println("\n🔹 " + nom + " - Vie : " + vie + " ❤️ | Popularité : " + popularite + " ⭐");
     }
 
     public void afficherMain() {
-        affichage.afficherCartes(nom.toString());
-        main.afficher();
-    }
-
-    public void recevoirDegats(int degats) {
-        pointsDeVie -= degats;
-        if (pointsDeVie < 0) {
-            pointsDeVie = 0;
+        System.out.println("📜 Main de " + nom + " :");
+        for (int i = 0; i < main.length; i++) {
+            if (main[i] != null) {
+                System.out.println((i + 1) + ". " + main[i].getNom() + " - " + main[i].getDescription());
+            }
         }
     }
-
-    public void recevoirSoin(int soin) {
-        pointsDeVie += soin;
-        if (pointsDeVie > 5) {
-            pointsDeVie = 5;
-        }
+    public Carte[] getMain() { 
+        return main;
     }
+    public void jouerCarte(int index, Joueur adversaire) {
+        if (index >= 0 && index < main.length && main[index] != null) {
+            Carte carteJouee = main[index];
 
-    public void gagnerPopularite(int points) {
-        popularite += points;
-        if (popularite > 5) {
-            popularite = 5;
-        }
-    }
+            if (carteJouee.getActionZone() == pirate.ActionZone.ATTAQUE) {
+                CarteAttaque carteAttaque = (CarteAttaque) carteJouee;
+                adversaire.perdreVie(carteAttaque.getDegats());
+                System.out.println(nom + " attaque " + adversaire.getNom() + " et lui inflige " + carteAttaque.getDegats() + " dégâts ! ⚔️");
+            } else if (carteJouee.getActionZone() == pirate.ActionZone.POPULARITE) {
+                CartePopularite cartePopularite = (CartePopularite) carteJouee;
+                gagnerPopularite(cartePopularite.getPopularite());
+                System.out.println(nom + " gagne " + cartePopularite.getPopularite() + " points de popularité ! 🌟");
+            }
 
-    public void perdrePopularite(int points) {
-        popularite -= points;
-        if (popularite < 0) {
-            popularite = 0;
-        }
-    }
-
-    public boolean ajouterCarte(Carte carte) {
-        return main.ajouterCarte(carte);
-    }
-
-    public void jouerCarte(int numCarte, Joueur adversaire) {
-        Carte carte = main.retirerCarte(numCarte);
-        if (carte != null) {
-            carte.appliquerEffet(this, adversaire);
-            affichage.jouerCarte(nom.toString(), carte.donnerZone());
+            main[index] = null;
         }
     }
 }

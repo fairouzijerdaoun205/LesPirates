@@ -1,19 +1,18 @@
 package pirate;
 
+
+
 public interface IAffichage {
     void souhaiterBienvenue();
-    void raconterHistoire();
-    void presenterJeux();
-    void afficherCarte(String titre, String description, int effet, int numCarte);
-    void afficherJoueur(String nom, int vie, int popularite);
-    void afficherCartes(String nom);
+    void afficherHistoire();
+    void presenterLeJeu(); void afficherDetailCarte(String nom, int effet, int numCarte);
+    void afficherInfosJoueur(String nom, int vie, int popularite);
     void afficherJoueurs();
+   void indiquerPiocheCarte(String nom);
     void piocherMain(String nom, int nbCarte);
-    void piocherCarte(String nom);
-    void jouerCarte(String nom, ZoneJeu zoneJeu);
-    void afficherTour(String nom);
-    void afficherGagnant(String nom);
-    int choisirCarte(String nom, int nbMaxCarte);
-    void afficherProblem();
-    void afficherCarteSpecial(String titre, String description, int numCarte);
+    void jouerCarte(String nom, ActionZone actionZone) {
+    void annoncerTour(String nom);
+    void annoncerGagnant(String nom);
+  
+     int demanderChoixCarte(String nom , int nbMaxCarte);
 }

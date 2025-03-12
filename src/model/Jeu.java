@@ -1,95 +1,83 @@
 package model;
 
-import pirate.Affichage;
-import pirate.IAffichage;
+import java.util.Scanner;
 
 public class Jeu {
-    private static final int NB_JOUEURS = 2;
-    private static IAffichage affichage = new Affichage();
-    private Joueur[] joueurs = new Joueur[NB_JOUEURS];
-    private Pioche pioche ;
+    private Joueur joueur1;
+    private Joueur joueur2;
+    private Pioche pioche;
 
-    public Jeu() {
-    	this.pioche = new Pioche(affichage);
-        joueurs[0] = new Joueur(Nom.JACK_LE_BORGNE);
-        joueurs[1] = new Joueur(Nom.BILL_JAMBE_DE_BOIS);
+    public Jeu(String nomJoueur1, String nomJoueur2) {
+        joueur1 = new Joueur(nomJoueur1);
+        joueur2 = new Joueur(nomJoueur2);
+
+        Carte[] cartes = {
+            new CartePopularite("Discours Inspirant", "Le joueur gagne 2 points de popularité", 1, 1, 2),
+            new CartePopularite("Révolte Organisée", "Le joueur gagne 1 point de popularité", 2, 2, 1),
+            new CarteAttaque("Coup de Sabre", "L'adversaire perd 2 points de vie", 3, 3, 2),
+            new CarteAttaque("Abordage Réussi", "L'adversaire perd 2 points de vie", 4, 4, 2),
+            new CartePopularite("Stratégie Audacieuse", "Le joueur gagne 2 points de popularité", 5, 5, 2),
+            new CartePopularite("Renforts Pirates", "Le joueur gagne 1 point de popularité", 6, 6, 1),
+            new CarteAttaque("Canon en Flammes", "L'adversaire perd 2 points de vie", 7, 7, 2),
+            new CarteAttaque("Trahison", "L'adversaire perd 2 points de vie", 8, 8, 2),
+            new CartePopularite("Mystique Voodoo", "Le joueur gagne 2 points de popularité", 9, 9, 2),
+            new CarteAttaque("Explosion de Poudre", "L'adversaire perd 3 points de vie", 10, 10, 3)
+        };
+
+        pioche = new Pioche(cartes);
+
+        distribuerCartes();
     }
 
-    public static IAffichage getAffichage() {
-        return affichage;
+    private void distribuerCartes() {
+        Carte[] mainJoueur1 = {pioche.piocherCarte(), pioche.piocherCarte(), pioche.piocherCarte(), pioche.piocherCarte(), pioche.piocherCarte()};
+        Carte[] mainJoueur2 = {pioche.piocherCarte(), pioche.piocherCarte(), pioche.piocherCarte(), pioche.piocherCarte(), pioche.piocherCarte()};
+
+        joueur1.recevoirCartes(mainJoueur1);
+        joueur2.recevoirCartes(mainJoueur2);
     }
 
-    public void lancerJeu() {
-        affichage.souhaiterBienvenue();
-        affichage.raconterHistoire();
-        affichage.presenterJeux();
-        distribuerCartesInitiales();
-        jouer();
-    }
+    public void jouer() {
+        Scanner scanner = new Scanner(System.in);
+        Joueur joueurActuel = joueur1;
+        Joueur adversaire = joueur2;
 
-    private void distribuerCartesInitiales() {
-        for (Joueur joueur : joueurs) {
-            for (int i = 0; i < Main.getTailleMain() - 1; i++) {
-                joueur.ajouterCarte(pioche.piocher());
+        while (!joueur1.estElimine() && !joueur2.estElimine() && !joueur1.aGagne() && !joueur2.aGagne()) {
+            System.out.println("\n➡️ C'est au tour de " + joueurActuel.getNom());
+            joueurActuel.afficherEtat();
+            adversaire.afficherEtat();
+
+            Carte cartePiochee = pioche.piocherCarte();
+            if (cartePiochee != null) {
+                System.out.println(joueurActuel.getNom() + " pioche une carte : " + cartePiochee.getNom());
             }
-            affichage.piocherMain(joueur.getNom().toString(), Main.getTailleMain() - 1);
-            joueur.afficherMain();
+
+            joueurActuel.afficherMain();
+            System.out.print("🃏 Choisissez une carte à jouer (1 à 5) : ");
+            int choix = scanner.nextInt() - 1;
+
+            while (choix < 0 || choix >= 5 || joueurActuel.getMain()[choix] == null) {
+                System.out.print("⚠️ Choix invalide, reessayez (1 à 5) : ");
+                choix = scanner.nextInt() - 1;
+            }
+
+            joueurActuel.jouerCarte(choix, adversaire);
+
+            if (joueurActuel.aGagne()) {
+                System.out.println("\n🏆 " + joueurActuel.getNom() + " a gagné en atteignant 5 points de popularité !");
+                break;
+            }
+
+            if (adversaire.estElimine()) {
+                System.out.println("\n🏆 " + joueurActuel.getNom() + " a gagné en éliminant son adversaire !");
+                break;
+            }
+
+            Joueur temp = joueurActuel;
+            joueurActuel = adversaire;
+            adversaire = temp;
         }
-    }
 
-    private void jouer() {
-        boolean partieTerminee = false;
-        while (!partieTerminee) {
-            for (Joueur joueur : joueurs) {
-                affichage.afficherTour(joueur.getNom().toString());
-                Carte cartePiochee = pioche.piocher();
-                if (cartePiochee != null) {
-                    joueur.ajouterCarte(cartePiochee);
-                    affichage.piocherCarte(joueur.getNom().toString());
-                }
-                joueur.afficherMain();
-                int choixCarte = affichage.choisirCarte(joueur.getNom().toString(), Main.getTailleMain());
-                joueur.jouerCarte(choixCarte, getAdversaire(joueur));
-                affichage.afficherJoueurs();
-                for (Joueur j : joueurs) {
-                    j.afficher();
-                }
-                if (verifierGagnant()) {
-                    partieTerminee = true;
-                    affichage.afficherGagnant(donnerGagnant().getNom().toString());
-                    break;
-                }
-            }
-        }
-    }
-
-    private Joueur getAdversaire(Joueur joueur) {
-        return joueur == joueurs[0] ? joueurs[1] : joueurs[0];
-    }
-
-    private boolean verifierGagnant() {
-        for (Joueur joueur : joueurs) {
-            if (joueur.getPointsDeVie() == 0 || joueur.getPopularite() == 5) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private Joueur donnerGagnant() {
-        for (Joueur joueur : joueurs) {
-            if (joueur.getPopularite() == 5) {
-                return joueur;
-            }
-            if (joueur.getPointsDeVie() == 0) {
-                return getAdversaire(joueur);
-            }
-        }
-        return null;
-    }
-
-    public static void main(String[] args) {
-        Jeu jeu = new Jeu();
-        jeu.lancerJeu();
+        scanner.close();
     }
 }
