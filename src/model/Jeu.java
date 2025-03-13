@@ -46,9 +46,11 @@ public class Jeu {
         return pioche;
     }
 
-    public boolean estFini() {
-        return joueur1.estElimine() || joueur2.estElimine() || joueur1.aGagne(joueur2) || joueur2.aGagne(joueur1);
-    }
+    	public boolean estFini() {
+    	    // Vérifier si l'un des joueurs a atteint 5 points de popularité ou si un joueur est éliminé
+    	    return joueur1.estElimine() || joueur2.estElimine() || joueur1.aGagne(joueur2) || joueur2.aGagne(joueur1) || joueur1.getPopularite() >= 5 || joueur2.getPopularite() >= 5;
+    	}
+  
 
 
     public Joueur getGagnant() {

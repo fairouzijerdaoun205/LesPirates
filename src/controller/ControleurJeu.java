@@ -36,11 +36,22 @@ public class ControleurJeu {
             int choix = affichage.demanderChoixCarte(joueurActuel.getNom(), 5);
             joueurActuel.jouerCarte(choix, adversaire);
 
-            if (jeu.getGagnant() != null) {
+            // Vérifier si un joueur a atteint 5 points de popularité
+            if (joueurActuel.getPopularite() >= 5) {
                 affichage.annoncerGagnant(joueurActuel.getNom());
+                break;
+            } else if (adversaire.getPopularite() >= 5) {
+                affichage.annoncerGagnant(adversaire.getNom());
                 break;
             }
 
+            // Vérifier si un joueur a gagné (par élimination)
+            if (jeu.getGagnant() != null) {
+                affichage.annoncerGagnant(jeu.getGagnant().getNom());
+                break;
+            }
+
+            // Changer de joueur pour le tour suivant
             Joueur temp = joueurActuel;
             joueurActuel = adversaire;
             adversaire = temp;

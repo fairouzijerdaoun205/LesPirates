@@ -38,4 +38,7 @@ public class Pioche {
         }
         return main;
     }
+    public boolean estVide() {
+        return indexPioche >= cartes.length;
+    }
 }

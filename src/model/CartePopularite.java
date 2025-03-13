@@ -7,6 +7,9 @@ public class CartePopularite extends Carte {
         super(nom, description, numCarte, pirate.ActionZone.POPULARITE);
         this.popularite = popularite;
     }
+    public int getPopularite() {
+        return popularite;
+    }
 
     @Override
     public void appliquerEffet(Joueur joueur, Joueur adversaire) {

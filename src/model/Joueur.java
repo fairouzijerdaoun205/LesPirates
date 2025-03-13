@@ -51,8 +51,27 @@ public class Joueur {
         }
 
         Carte carteJouee = main[index];
+        System.out.println(nom + " joue la carte : " + carteJouee.getNom());
+
         carteJouee.appliquerEffet(this, adversaire);
+
+        // Affichage détaillé après l'effet de la carte
+        if (carteJouee instanceof CarteAttaque) {
+            // Afficher les dégâts infligés
+            System.out.println("💥 " + adversaire.getNom() + " perd " + ((CarteAttaque) carteJouee).getDegats() + " points de vie !");
+            System.out.println("💔 " + adversaire.getNom() + " a maintenant " + adversaire.getVie() + " points de vie.");
+        } else if (carteJouee instanceof CarteDefense) {
+            // Afficher les effets de défense
+            System.out.println("🛡️ " + nom + " utilise un bouclier pour réduire les dégâts.");
+        } else if (carteJouee instanceof CartePopularite) {
+            // Afficher l'augmentation de popularité
+            System.out.println("🎉 " + nom + " gagne " + ((CartePopularite) carteJouee).getPopularite() + " points de popularité !");
+            System.out.println("🔥 " + nom + " a maintenant " + this.getPopularite() + " points de popularité.");
+        }
         main[index] = null; // La carte est jouée et supprimée de la main
+
+        // Réajuster la main pour éviter des trous
+        reordonnerMain();
     }
 
     public void perdreVie(int degats) {
@@ -71,6 +90,14 @@ public class Joueur {
         if (index >= 0 && index < main.length && main[index] != null) {
             System.out.println("⚔️ " + nom + " perd la carte : " + main[index].getNom());
             main[index] = null; // Retirer la carte de la main
+        }
+    }
+    private void reordonnerMain() {
+        for (int i = 0; i < main.length - 1; i++) {
+            if (main[i] == null && main[i + 1] != null) {
+                main[i] = main[i + 1];
+                main[i + 1] = null;
+            }
         }
     }
 }

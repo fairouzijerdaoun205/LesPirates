@@ -7,7 +7,9 @@ public class CarteAttaque extends Carte {
         super(nom, description, numCarte, pirate.ActionZone.ATTAQUE);
         this.degats = degats;
     }
-
+    public int getDegats() {
+        return degats;
+    }
     @Override
     public void appliquerEffet(Joueur joueur, Joueur adversaire) {
         adversaire.perdreVie(degats);
