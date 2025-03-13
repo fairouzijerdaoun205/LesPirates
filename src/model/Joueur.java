@@ -1,5 +1,7 @@
 package model;
 
+import pirate.ActionZone;
+
 public class Joueur {
     private String nom;
     private int vie;
@@ -52,25 +54,31 @@ public class Joueur {
 
         Carte carteJouee = main[index];
         System.out.println(nom + " joue la carte : " + carteJouee.getNom());
+       
+        if (carteJouee.getActionZone() == ActionZone.POPULARITE) {
+            System.out.println("La carte est déposée dans la zone de popularité.");
+        } else if (carteJouee.getActionZone() == ActionZone.ATTAQUE) {
+            System.out.println(" La carte est déposée dans la zone d'attaque.");
+        }
+
 
         carteJouee.appliquerEffet(this, adversaire);
 
-        // Affichage détaillé après l'effet de la carte
+        
         if (carteJouee instanceof CarteAttaque) {
-            // Afficher les dégâts infligés
+           
             System.out.println("💥 " + adversaire.getNom() + " perd " + ((CarteAttaque) carteJouee).getDegats() + " points de vie !");
             System.out.println("💔 " + adversaire.getNom() + " a maintenant " + adversaire.getVie() + " points de vie.");
         } else if (carteJouee instanceof CarteDefense) {
-            // Afficher les effets de défense
+           
             System.out.println("🛡️ " + nom + " utilise un bouclier pour réduire les dégâts.");
         } else if (carteJouee instanceof CartePopularite) {
-            // Afficher l'augmentation de popularité
+      
             System.out.println("🎉 " + nom + " gagne " + ((CartePopularite) carteJouee).getPopularite() + " points de popularité !");
             System.out.println("🔥 " + nom + " a maintenant " + this.getPopularite() + " points de popularité.");
         }
-        main[index] = null; // La carte est jouée et supprimée de la main
-
-        // Réajuster la main pour éviter des trous
+        main[index] = null; 
+        
         reordonnerMain();
     }
 
@@ -80,7 +88,7 @@ public class Joueur {
         if (bouclier > 0) {
             System.out.println("🛡️ " + nom + " bloque " + bouclier + " dégâts grâce à son bouclier !");
         }
-        bouclier = 0; // Bouclier utilisé après un coup
+        bouclier = 0; 
         System.out.println(nom + " perd " + degatsSubis + " points de vie et a maintenant " + this.vie + " ❤️.");
     }
 
@@ -93,7 +101,7 @@ public class Joueur {
     public void retirerCarte(int index) {
         if (index >= 0 && index < main.length && main[index] != null) {
             System.out.println("⚔️ " + nom + " perd la carte : " + main[index].getNom());
-            main[index] = null; // Retirer la carte de la main
+            main[index] = null; 
         }
     }
     private void reordonnerMain() {
