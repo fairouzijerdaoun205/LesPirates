@@ -3,7 +3,11 @@ package pirate;
 import java.util.Scanner;
 
 public class Affichage implements IAffichage {
-    private Scanner scanner = new Scanner(System.in);
+    private Scanner scanner;
+
+    public Affichage(Scanner scanner) {
+        this.scanner = scanner;
+    }
 
     @Override
     public void souhaiterBienvenue() {
@@ -24,24 +28,22 @@ public class Affichage implements IAffichage {
         System.out.println("- Le but est d'atteindre 5 points de popularité ou de réduire les points de vie de l'adversaire à 0.");
         System.out.println("- Chaque tour, piochez une carte et jouez-la pour attaquer ou gagner en popularité.\n");
     }
-   
+
     @Override
-    public void afficherDetailCarte(String nom, String description, int effet, int numCarte) {
-        System.out.println("\t Numéro de carte : " + numCarte);
-        System.out.println("\t Nom : " + nom);
-        System.out.println("\t Description : " + description);
-        System.out.println("\t Effet : " + effet);
+    public void annoncerTour(String nom) {
+        System.out.println("\n➡️ C'est au tour de " + nom);
     }
 
     @Override
-	public void afficherInfosJoueur(String nom, int vie, int popularite) {
-		System.out.println(" \t nom : " + nom + "\n \t vie : " + vie + "\n \t popularite : " + popularite + " \n");
-	}
+    public void annoncerGagnant(String nom) {
+        System.out.println("\n🏆 Félicitations à " + nom + " !");
+    }
 
     @Override
-    public void afficherJoueurs() {
-        System.out.println("\n📌 AFFICHAGE DES JOUEURS :");
+    public void afficherInfosJoueur(String nom, int vie, int popularite) {
+        System.out.println("🔹 " + nom + " - Vie : " + vie + " ❤️ | Popularité : " + popularite + " ⭐");
     }
+
     @Override
     public void afficherActionCarte(String message) {
         System.out.println(message);
@@ -49,48 +51,24 @@ public class Affichage implements IAffichage {
 
     @Override
     public void indiquerPiocheCarte(String nom) {
-        System.out.println(nom + " pioche une carte : " );
+        System.out.println(nom + " pioche une carte...");
     }
 
     @Override
-    public void piocherMain(String nom, int nbCarte) {
-        System.out.println("\n🃏 " + nom + " pioche une main de " + nbCarte + " cartes.");
-    }
-
-    public void jouerCarte(String nom, ActionZone actionZone) {
-		System.out.println(nom + " joue une carte dans la zone " + actionZone + " \n");
-	}
-
-    @Override
-    public void annoncerTour(String nom) {
-        System.out.println("\n➡️ C'est au tour de " + nom );
-    }
-
-    @Override
-    public void annoncerGagnant(String nom) {
-        System.out.println("\n🏆 Félicitations à " +nom );
-    }
-
-
-    
-
     public int demanderChoixCarte(String nom, int nbMaxCarte) {
         int numCarte;
         do {
-            System.out.println("Quelle carte veux-tu jouer ?");
-            System.out.print("🃏 Entre un numéro de carte (1-" + nbMaxCarte + ") : ");
-            
+            System.out.println("🃏 " + nom + ", quelle carte veux-tu jouer ?");
+            System.out.print("➡️ Entre un numéro de carte (1-" + nbMaxCarte + ") : ");
+
             while (!scanner.hasNextInt()) {
-                System.out.print("⚠️ Saisie invalide. Veuillez entrer un nombre entre 1 et " + nbMaxCarte + " : ");
+                System.out.print("⚠️ Saisie invalide. Veuillez entrer un nombre valide : ");
                 scanner.next();
             }
-            
+
             numCarte = scanner.nextInt();
         } while (numCarte < 1 || numCarte > nbMaxCarte);
-        
+
         return numCarte - 1;
     }
-
-
-	
 }

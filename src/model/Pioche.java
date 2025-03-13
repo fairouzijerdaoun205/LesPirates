@@ -23,10 +23,19 @@ public class Pioche {
     }
 
     public Carte piocherCarte() {
-        return (indexPioche < cartes.length) ? cartes[indexPioche++] : null;
+        if (indexPioche >= cartes.length) {
+            System.out.println("🔄 La pioche est vide ! Mélange des cartes...");
+            melangerPioche();
+            indexPioche = 0;
+        }
+        return cartes[indexPioche++];
     }
 
-    public boolean estVide() {
-        return indexPioche >= cartes.length;
+    public Carte[] piocherCartes(int nombre) {
+        Carte[] main = new Carte[nombre];
+        for (int i = 0; i < nombre; i++) {
+            main[i] = piocherCarte();
+        }
+        return main;
     }
 }

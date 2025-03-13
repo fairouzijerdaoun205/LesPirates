@@ -1,16 +1,16 @@
 package model;
 
-import pirate.ActionZone;
-
 public class CarteAttaque extends Carte {
     private int degats;
 
-    public CarteAttaque(String nom, String description, int effet, int numCarte, int degats) {
-        super(nom, description, effet, numCarte, ActionZone.ATTAQUE);
+    public CarteAttaque(String nom, String description, int numCarte, int degats) {
+        super(nom, description, numCarte, pirate.ActionZone.ATTAQUE);
         this.degats = degats;
     }
 
-    public int getDegats() {
-        return degats;
+    @Override
+    public void appliquerEffet(Joueur joueur, Joueur adversaire) {
+        adversaire.perdreVie(degats);
+        System.out.println(joueur.getNom() + " attaque et inflige " + degats + " dégâts !");
     }
 }

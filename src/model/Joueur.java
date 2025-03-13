@@ -5,52 +5,32 @@ public class Joueur {
     private int vie;
     private int popularite;
     private Carte[] main;
+    private int bouclier; // Protection contre les attaques
 
     public Joueur(String nom) {
         this.nom = nom;
         this.vie = 5;
         this.popularite = 0;
+        this.bouclier = 0;
         this.main = new Carte[5]; 
     }
 
-    public String getNom() {
-        return nom;
-    }
-
-    public int getVie() {
-        return vie;
-    }
-
-    public void perdreVie(int degats) {
-        this.vie -= degats;
-        if (this.vie < 0) this.vie = 0;
-    }
-
-    public int getPopularite() {
-        return popularite;
-    }
-
-    public void gagnerPopularite(int points) {
-        this.popularite += points;
-    }
-
-    public boolean estElimine() {
-        return vie <= 0;
-    }
-
-    public boolean aGagne() {
-        return popularite >= 5;
+    public String getNom() { return nom; }
+    public int getVie() { return vie; }
+    public int getPopularite() { return popularite; }
+    public boolean estElimine() { return vie <= 0; }
+    public boolean aGagne(Joueur adversaire) {
+        return this.popularite >= 5 || adversaire.estElimine();
     }
 
     public void recevoirCartes(Carte[] cartes) {
-        for (int i = 0; i < cartes.length; i++) {
-            main[i] = cartes[i];
+        if (cartes == null || cartes.length == 0) {
+            System.out.println("⚠️ Aucune carte à recevoir.");
+            return;
         }
+        System.arraycopy(cartes, 0, main, 0, cartes.length);
     }
 
-    public void afficherEtat() {
-        System.out.println("\n🔹 " + nom + " - Vie : " + vie + " ❤️ | Popularité : " + popularite + " ⭐");
-    }
 
     public void afficherMain() {
         System.out.println("📜 Main de " + nom + " :");
@@ -60,28 +40,38 @@ public class Joueur {
             }
         }
     }
-    public Carte[] getMain() { 
+    public Carte[] getMain() {
         return main;
     }
-    public String jouerCarte(int index, Joueur adversaire) {
-        if (index >= 0 && index < main.length && main[index] != null) {
-            Carte carteJouee = main[index];
-            String message = "";
 
-            if (carteJouee.getActionZone() == pirate.ActionZone.ATTAQUE) {
-                CarteAttaque carteAttaque = (CarteAttaque) carteJouee;
-                adversaire.perdreVie(carteAttaque.getDegats());
-                message = nom + " attaque " + adversaire.getNom() + " et lui inflige " + carteAttaque.getDegats() + " dégâts ! ⚔️";
-            } else if (carteJouee.getActionZone() == pirate.ActionZone.POPULARITE) {
-                CartePopularite cartePopularite = (CartePopularite) carteJouee;
-                gagnerPopularite(cartePopularite.getPopularite());
-                message = nom + " gagne " + cartePopularite.getPopularite() + " points de popularité ! 🌟";
-            }
-
-            main[index] = null;
-            return message;
+    public void jouerCarte(int index, Joueur adversaire) {
+        if (index < 0 || index >= main.length || main[index] == null) {
+            System.out.println("⚠️ Choix invalide.");
+            return;
         }
-        return "Action invalide.";
+
+        Carte carteJouee = main[index];
+        carteJouee.appliquerEffet(this, adversaire);
+        main[index] = null; // La carte est jouée et supprimée de la main
     }
 
+    public void perdreVie(int degats) {
+        int degatsSubis = Math.max(0, degats - bouclier);
+        this.vie = Math.max(0, this.vie - degatsSubis);
+        bouclier = 0; // Bouclier utilisé
+        System.out.println(nom + " perd " + degatsSubis + " points de vie !");
+    }
+    public void gagnerPopularite(int popularite) {
+        this.popularite += popularite;
+    }
+    public void ajouterBouclier(int reductionDegats) {
+        this.bouclier += reductionDegats;
+    }
+    public void retirerCarte(int index) {
+        if (index >= 0 && index < main.length && main[index] != null) {
+            System.out.println("⚔️ " + nom + " perd la carte : " + main[index].getNom());
+            main[index] = null; // Retirer la carte de la main
+        }
+    }
 }
+
