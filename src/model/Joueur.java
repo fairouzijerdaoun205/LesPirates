@@ -77,9 +77,13 @@ public class Joueur {
     public void perdreVie(int degats) {
         int degatsSubis = Math.max(0, degats - bouclier);
         this.vie = Math.max(0, this.vie - degatsSubis);
-        bouclier = 0; // Bouclier utilisé
-        System.out.println(nom + " perd " + degatsSubis + " points de vie !");
+        if (bouclier > 0) {
+            System.out.println("🛡️ " + nom + " bloque " + bouclier + " dégâts grâce à son bouclier !");
+        }
+        bouclier = 0; // Bouclier utilisé après un coup
+        System.out.println(nom + " perd " + degatsSubis + " points de vie et a maintenant " + this.vie + " ❤️.");
     }
+
     public void gagnerPopularite(int popularite) {
         this.popularite += popularite;
     }

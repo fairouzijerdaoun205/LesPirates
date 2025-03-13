@@ -11,7 +11,7 @@ public class Affichage implements IAffichage {
 
     @Override
     public void souhaiterBienvenue() {
-        System.out.println("\n⚓ Bienvenue dans le jeu des Pirates ! 🏴‍☠️");
+        System.out.println("\n Bienvenue dans le jeu des Pirates ! ");
     }
 
     @Override
@@ -31,12 +31,12 @@ public class Affichage implements IAffichage {
 
     @Override
     public void annoncerTour(String nom) {
-        System.out.println("\n➡️ C'est au tour de " + nom);
+        System.out.println("\n C'est au tour de " + nom);
     }
 
     @Override
     public void annoncerGagnant(String nom) {
-        System.out.println("\n🏆 Félicitations à " + nom + " !");
+        System.out.println("\n Félicitations à " + nom + " !");
     }
 
     @Override
@@ -59,7 +59,8 @@ public class Affichage implements IAffichage {
         int numCarte;
         do {
             System.out.println("🃏 " + nom + ", quelle carte veux-tu jouer ?");
-            System.out.print("➡️ Entre un numéro de carte (1-" + nbMaxCarte + ") : ");
+            System.out.print("➡️ Entre un numéro de carte (1-4) : ");
+
 
             while (!scanner.hasNextInt()) {
                 System.out.print("⚠️ Saisie invalide. Veuillez entrer un nombre valide : ");

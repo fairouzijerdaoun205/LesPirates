@@ -44,6 +44,7 @@ public class ControleurJeu {
                 affichage.annoncerGagnant(adversaire.getNom());
                 break;
             }
+            
 
             // Vérifier si un joueur a gagné (par élimination)
             if (jeu.getGagnant() != null) {
