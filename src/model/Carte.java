@@ -1,23 +1,33 @@
 package model;
 
-import pirate.ActionZone;
-
 public abstract class Carte {
-    protected String nom;
-    protected String description;
-    protected int numCarte;
-    protected ActionZone actionZone;
+    private String nom;
+    private String description;
+    private int id;
+    private TypeCarte type;
 
-    public Carte(String nom, String description, int numCarte, ActionZone actionZone) {
+    public Carte(String nom, String description, int id, TypeCarte type) {
         this.nom = nom;
         this.description = description;
-        this.numCarte = numCarte;
-        this.actionZone = actionZone;
+        this.id = id;
+        this.type = type;
     }
 
-    public String getNom() { return nom; }
-    public String getDescription() { return description; }
-    public ActionZone getActionZone() { return actionZone; }
+    public String getNom() {
+        return nom;
+    }
 
-    public abstract void appliquerEffet(Joueur joueur, Joueur adversaire);
+    public String getDescription() {
+        return description;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public TypeCarte getType() {
+        return type;
+    }
+
+    public abstract void appliquerEffet(Joueur joueurActif, Joueur joueurCible);
 }

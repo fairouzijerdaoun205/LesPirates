@@ -1,18 +1,20 @@
 package model;
 
 public class CarteAttaque extends Carte {
-    private int degats;
+    private int pointsAttaque;
 
-    public CarteAttaque(String nom, String description, int numCarte, int degats) {
-        super(nom, description, numCarte, pirate.ActionZone.ATTAQUE);
-        this.degats = degats;
+    public CarteAttaque(String nom, String description, int id, int pointsAttaque) {
+        super(nom, description, id, TypeCarte.ATTAQUE);
+        this.pointsAttaque = pointsAttaque;
     }
-    public int getDegats() {
-        return degats;
-    }
+
     @Override
-    public void appliquerEffet(Joueur joueur, Joueur adversaire) {
-        adversaire.perdreVie(degats);
-        System.out.println(joueur.getNom() + " attaque et inflige " + degats + " dégâts !");
+    public void appliquerEffet(Joueur joueurActif, Joueur joueurCible) {
+        int nouvelleVie = joueurCible.getVie() - pointsAttaque;
+        if (nouvelleVie < 0) {
+            nouvelleVie = 0; // Les points de vie ne peuvent pas être négatifs
+        }
+        joueurCible.setVie(nouvelleVie);
+        System.out.println(joueurCible.getNom() + " perd " + pointsAttaque + " points de vie !");
     }
 }

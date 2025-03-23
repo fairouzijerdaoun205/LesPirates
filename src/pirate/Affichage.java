@@ -59,7 +59,7 @@ public class Affichage implements IAffichage {
         int numCarte;
         do {
             System.out.println("🃏 " + nom + ", quelle carte veux-tu jouer ?");
-            System.out.print("➡️ Entre un numéro de carte (1-4) : ");
+            System.out.print("➡️ Entre un numéro de carte (1-5) : ");
 
 
             while (!scanner.hasNextInt()) {
